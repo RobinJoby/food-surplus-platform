@@ -56,19 +56,12 @@ const Login = () => {
         setFormData({ email: '', password: '' })
         navigate('/')
       } else {
-        // Handle login failure - DON'T clear form, just show error and shake
-        setShakeForm(true)
-        setTimeout(() => setShakeForm(false), 500)
         // AuthContext already shows toast, but let's add a backup
-        if (!result?.error) {
-          toast.error('Login failed. Please check your credentials.')
-        }
+        toast.error('Login failed. Please check your credentials.')
       }
     } catch (error) {
       console.error('Login error:', error)
       toast.error('Connection error. Please check your internet and try again.')
-      setShakeForm(true)
-      setTimeout(() => setShakeForm(false), 500)
     } finally {
       setLoading(false)
     }
