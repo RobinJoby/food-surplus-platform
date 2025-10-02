@@ -467,6 +467,17 @@ def create_app(config_name=None):
                     pickup_request.completed_at = datetime.utcnow()
                     pickup_request.food_item.status = 'completed'
             
+            elif status == 'cancelled' and user.role == 'beneficiary':
+                # Allow beneficiaries to cancel their own requests
+                pickup_request.status = 'cancelled'
+                pickup_request.responded_at = datetime.utcnow()
+                # Set food item back to available if it was requested/accepted
+                if pickup_request.food_item.status in ['requested', 'accepted']:
+                    pickup_request.food_item.status = 'available'
+            
+            else:
+                return jsonify({'error': 'Invalid status or insufficient permissions'}), 400
+            
             db.session.commit()
             
             return jsonify({
