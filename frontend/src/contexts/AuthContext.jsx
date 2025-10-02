@@ -48,10 +48,11 @@ export const AuthProvider = ({ children }) => {
       api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`
       setUser(userData)
       
-      toast.success('Login successful!')
+      // Don't show toast here - let the Login component handle it
       return { success: true }
     } catch (error) {
       const message = error.response?.data?.error || 'Login failed'
+      // Show toast for login errors
       toast.error(message)
       return { success: false, error: message }
     }

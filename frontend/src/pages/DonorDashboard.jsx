@@ -37,6 +37,10 @@ const DonorDashboard = () => {
       const items = foodResponse.data.food_items || []
       const requests = requestsResponse.data.pickup_requests || []
       
+      console.log('Donor Dashboard - Food Items:', items)
+      console.log('Donor Dashboard - Pickup Requests:', requests)
+      console.log('Completed requests:', requests.filter(req => req.status === 'completed'))
+      
       setStats({
         total: items.length,
         available: items.filter(item => item.status === 'available').length,
