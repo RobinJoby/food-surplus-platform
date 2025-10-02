@@ -13,6 +13,18 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
+  const [shakeForm, setShakeForm] = useState(false)
+
+  // Test function to trigger error UI
+  const testErrorHandling = () => {
+    setShakeForm(true)
+    setTimeout(() => setShakeForm(false), 500)
+    setErrors({
+      email: 'Test error message',
+      password: 'Test error message',
+      general: 'This is a test error to check if error handling works'
+    })
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -52,14 +64,40 @@ const Login = () => {
     if (!validateForm()) return
 
     setLoading(true)
+    setErrors({}) // Clear any previous errors
+    
     try {
       const result = await login(formData.email, formData.password)
-      if (result.success) {
+      
+      if (result && result.success) {
         // Navigate to home - DashboardRouter will handle role-based routing
         navigate('/')
+      } else {
+        // Handle login failure - always trigger error UI for failed login
+        setShakeForm(true)
+        setTimeout(() => setShakeForm(false), 500)
+        
+        const errorMessage = result?.error || 'Login failed'
+        
+        if (errorMessage.toLowerCase().includes('invalid credentials')) {
+          setErrors({
+            email: 'Invalid email or password',
+            password: 'Invalid email or password'
+          })
+        } else if (errorMessage.toLowerCase().includes('email')) {
+          setErrors({ email: errorMessage })
+        } else if (errorMessage.toLowerCase().includes('password')) {
+          setErrors({ password: errorMessage })
+        } else {
+          setErrors({ general: errorMessage })
+        }
       }
     } catch (error) {
       console.error('Login error:', error)
+      setErrors({ general: 'An unexpected error occurred. Please try again.' })
+      // Trigger shake animation for any error
+      setShakeForm(true)
+      setTimeout(() => setShakeForm(false), 500)
     } finally {
       setLoading(false)
     }
@@ -86,7 +124,24 @@ const Login = () => {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className={`mt-8 space-y-6 ${shakeForm ? 'shake' : ''}`} onSubmit={handleSubmit}>
+          {errors.general && (
+            <div className="rounded-md bg-red-50 p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">
+                    {errors.general}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -103,7 +158,7 @@ const Login = () => {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`input pl-10 ${errors.email ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}`}
+                  className={`input pl-10 ${errors.email ? 'input-error' : ''}`}
                   placeholder="Enter your email"
                 />
               </div>
@@ -127,7 +182,7 @@ const Login = () => {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`input pl-10 pr-10 ${errors.password ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}`}
+                  className={`input pl-10 pr-10 ${errors.password ? 'input-error' : ''}`}
                   placeholder="Enter your password"
                 />
                 <button
@@ -152,7 +207,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed mb-2"
             >
               {loading ? (
                 <div className="flex items-center">
@@ -162,6 +217,15 @@ const Login = () => {
               ) : (
                 'Sign in'
               )}
+            </button>
+            
+            {/* Temporary test button */}
+            <button
+              type="button"
+              onClick={testErrorHandling}
+              className="w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            >
+              Test Error Handling
             </button>
           </div>
 

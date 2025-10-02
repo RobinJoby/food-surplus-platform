@@ -35,11 +35,13 @@ const DonorDashboard = () => {
       
       // Calculate stats
       const items = foodResponse.data.food_items || []
+      const requests = requestsResponse.data.pickup_requests || []
+      
       setStats({
         total: items.length,
         available: items.filter(item => item.status === 'available').length,
-        requested: items.filter(item => item.status === 'requested').length,
-        completed: items.filter(item => item.status === 'completed').length
+        requested: items.filter(item => item.status === 'requested' || item.status === 'accepted').length,
+        completed: requests.filter(req => req.status === 'completed').length
       })
     } catch (error) {
       console.error('Error fetching data:', error)

@@ -35,13 +35,15 @@ const BeneficiaryDashboard = () => {
       setAvailableFood(foodResponse.data.food_items || [])
       setMyRequests(requestsResponse.data.pickup_requests || [])
       
-      // Calculate stats
+      // Calculate stats - only count current user's requests
       const requests = requestsResponse.data.pickup_requests || []
+      const myRequests = requests.filter(req => req.beneficiary_id === user.id)
+      
       setStats({
         available: foodResponse.data.food_items?.length || 0,
-        requested: requests.filter(req => req.status === 'pending').length,
-        accepted: requests.filter(req => req.status === 'accepted').length,
-        completed: requests.filter(req => req.status === 'completed').length
+        requested: myRequests.filter(req => req.status === 'pending').length,
+        accepted: myRequests.filter(req => req.status === 'accepted' || req.status === 'picked').length,
+        completed: myRequests.filter(req => req.status === 'completed').length
       })
     } catch (error) {
       console.error('Error fetching data:', error)
