@@ -42,7 +42,7 @@ def create_app(config_name=None):
                 return jsonify({'error': 'Email already registered'}), 400
             
             # Validate role
-            if data['role'] not in ['donor', 'beneficiary']:
+            if data['role'] not in ['donor', 'beneficiary', 'admin']:
                 return jsonify({'error': 'Invalid role'}), 400
             
             # Validate coordinates if provided
