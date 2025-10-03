@@ -42,14 +42,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
 
     setLoading(true)
-    
+
     try {
       const result = await login(formData.email, formData.password)
-      
+
       if (result && result.success) {
         toast.success('Welcome back! Login successful.')
         // Only clear form on successful login
@@ -159,18 +159,6 @@ const Login = () => {
                 'Sign in'
               )}
             </button>
-          </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Demo accounts available:
-            </p>
-            <div className="mt-2 space-y-1 text-xs text-gray-500">
-              <div>Donor: mario@restaurant.com</div>
-              <div>Beneficiary: contact@hopeshelter.org</div>
-              <div>Admin: admin@foodsurplus.com</div>
-              <div>Password: password123</div>
-            </div>
           </div>
         </form>
       </div>
