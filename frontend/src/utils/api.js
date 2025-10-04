@@ -1,9 +1,10 @@
 import axios from 'axios'
 
-// Debug API configuration
-const baseURL = import.meta.env.VITE_API_URL || '/api'
+// Force relative API URLs for Railway deployment
+const baseURL = '/api'
 console.log('API Base URL:', baseURL)
-console.log('Environment:', import.meta.env.VITE_API_URL)
+console.log('Environment VITE_API_URL:', import.meta.env.VITE_API_URL)
+console.log('Forcing relative URL for Railway deployment')
 
 // Create axios instance with base configuration
 export const api = axios.create({
