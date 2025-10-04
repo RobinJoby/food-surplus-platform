@@ -11,14 +11,14 @@ class Config:
     database_url = os.environ.get('DATABASE_URL')
     print(f"DATABASE_URL environment variable: {database_url}")  # Debug log
     
-    if database_url:
-        # Railway uses PostgreSQL
+    if database_url and not database_url.startswith('mysql'):
+        # Railway PostgreSQL - fix postgres:// to postgresql://
         if database_url.startswith('postgres://'):
             database_url = database_url.replace('postgres://', 'postgresql://', 1)
         SQLALCHEMY_DATABASE_URI = database_url
         print(f"Using PostgreSQL: {SQLALCHEMY_DATABASE_URI}")  # Debug log
-    elif os.environ.get('RAILWAY_ENVIRONMENT'):
-        # Running on Railway but no DATABASE_URL - use SQLite as fallback
+    elif os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('PORT'):
+        # Running on Railway but DATABASE_URL is MySQL or missing - use SQLite as fallback
         SQLALCHEMY_DATABASE_URI = 'sqlite:///app.db'
         print("Using SQLite fallback on Railway")  # Debug log
     else:
