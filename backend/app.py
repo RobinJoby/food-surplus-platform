@@ -61,6 +61,9 @@ def create_app(config_name=None):
                 address=data.get('address')
             )
             
+            # Set password hash using bcrypt
+            user.set_password(data['password'])
+            
             db.session.add(user)
             db.session.commit()
             
