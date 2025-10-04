@@ -1,0 +1,56 @@
+# Railway.app Deployment Configuration
+# This file tells Railway how to deploy your services
+
+services:
+  # MySQL Database
+  database:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${{MYSQL_ROOT_PASSWORD}}
+      MYSQL_DATABASE: food_surplus_db
+      MYSQL_USER: ${{MYSQL_USER}}
+      MYSQL_PASSWORD: ${{MYSQL_PASSWORD}}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    command: redis-server --requirepass ${{REDIS_PASSWORD}}
+    volumes:
+      - redis_data:/data
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.railway
+    environment:
+      FLASK_ENV: production
+      DATABASE_URL: mysql+pymysql://${{MYSQL_USER}}:${{MYSQL_PASSWORD}}@database:3306/food_surplus_db
+      JWT_SECRET_KEY: ${{JWT_SECRET_KEY}}
+      SECRET_KEY: ${{SECRET_KEY}}
+      REDIS_URL: redis://:${{REDIS_PASSWORD}}@redis:6379
+    depends_on:
+      - database
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.railway
+      args:
+        VITE_API_URL: ${{RAILWAY_STATIC_URL}}/api
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+  redis_data:
