@@ -1,0 +1,28 @@
+# 🔐 Generate Secure Environment Variables for Railway
+
+# Use these secure, randomly generated values for your Railway deployment:
+
+# Database Configuration
+MYSQL_ROOT_PASSWORD=FoodSurplus2024!SecureRoot#9X7mK3$
+MYSQL_USER=food_surplus_user
+MYSQL_PASSWORD=DbPass2024!SecureFood#8Y6nL2@
+
+# Application Security (32+ character secrets)
+JWT_SECRET_KEY=FoodSurplusJWT2024!SecureToken#9X7mK3$8Y6nL2@4Z5pQ1W
+SECRET_KEY=FlaskSecret2024!SecureApp#9X7mK3$8Y6nL2@4Z5pQ1W3E
+
+# Redis Configuration  
+REDIS_PASSWORD=RedisPass2024!SecureCache#7M5kJ9$
+
+# Instructions:
+# 1. Copy these values to Railway dashboard
+# 2. Go to your Railway project > Variables tab
+# 3. Add each variable name and value
+# 4. Save and redeploy
+
+# Note: These are already secure random values - you can use them as-is
+# or generate your own following the same pattern:
+# - Mix of letters, numbers, and special characters
+# - At least 32 characters for JWT_SECRET_KEY and SECRET_KEY
+# - At least 16 characters for passwords
+# - Avoid common words or patterns

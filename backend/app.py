@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory, send_file
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from datetime import datetime, timedelta
@@ -9,7 +9,9 @@ from models import db, bcrypt, User, FoodItem, PickupRequest, Notification, Veri
 from utils import role_required, create_notification, notify_nearby_beneficiaries, validate_coordinates, paginate_query
 
 def create_app(config_name=None):
-    app = Flask(__name__)
+    # Set static folder for Railway deployment
+    static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+    app = Flask(__name__, static_folder=static_folder, static_url_path='')
     
     # Configuration
     config_name = config_name or os.environ.get('FLASK_ENV', 'default')
@@ -20,6 +22,22 @@ def create_app(config_name=None):
     bcrypt.init_app(app)
     jwt = JWTManager(app)
     CORS(app)
+    
+    # Serve frontend routes
+    @app.route('/')
+    def serve_frontend():
+        return send_from_directory(app.static_folder, 'index.html')
+    
+    @app.route('/<path:path>')
+    def serve_frontend_routes(path):
+        # If it's an API route, let it pass through
+        if path.startswith('api/') or path.startswith('auth/') or path.startswith('uploads/'):
+            return None
+        # If the file exists, serve it
+        if os.path.exists(os.path.join(app.static_folder, path)):
+            return send_from_directory(app.static_folder, path)
+        # Otherwise, serve index.html for client-side routing
+        return send_from_directory(app.static_folder, 'index.html')
     
     # Create tables
     with app.app_context():
