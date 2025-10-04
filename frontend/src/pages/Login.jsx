@@ -26,37 +26,35 @@ const Login = () => {
   const validateForm = () => {
     if (!formData.email) {
       toast.error('Email is required')
+      setShakeForm(true)
+      setTimeout(() => setShakeForm(false), 500)
       return false
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       toast.error('Please enter a valid email address')
+      setShakeForm(true)
+      setTimeout(() => setShakeForm(false), 500)
       return false
     }
-
     if (!formData.password) {
       toast.error('Password is required')
+      setShakeForm(true)
+      setTimeout(() => setShakeForm(false), 500)
       return false
     }
-
     return true
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     if (!validateForm()) return
-
     setLoading(true)
-
     try {
       const result = await login(formData.email, formData.password)
-
       if (result && result.success) {
         toast.success('Welcome back! Login successful.')
-        // Only clear form on successful login
         setFormData({ email: '', password: '' })
         navigate('/')
       } else {
-        // AuthContext already shows toast, but let's add a backup
         toast.error('Login failed. Please check your credentials.')
       }
     } catch (error) {
@@ -68,94 +66,101 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
-        {/* Single unified container with logo and form */}
-        <div className="bg-white shadow-lg rounded-lg p-8 border border-gray-200">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-100 via-blue-100 to-violet-100 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-700">
+      <div className="max-w-md w-full animate-fade-in-up">
+        {/* Logo / Brand */}
+        <div className="flex justify-center mb-6">
+          <img
+            src="/logo.png"
+            alt="Brand Logo"
+            className="h-14 w-14 rounded-full shadow-lg border-2 border-primary-300 object-cover bg-white"
+          />
+        </div>
+        {/* Card */}
+        <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300 transition-all duration-300">
           {/* Header section */}
           <div className="text-center mb-4">
-            <h2 className="text-2xl font-extrabold text-gray-900">
+            <h2 className="text-3xl font-extrabold text-gray-800 tracking-tight">
               Sign in to your account
             </h2>
             <p className="mt-2 text-sm text-gray-600">
               Or{' '}
               <Link
                 to="/register"
-                className="font-medium text-primary-600 hover:text-primary-500"
+                className="font-semibold text-primary-600 hover:text-primary-700 underline"
               >
                 create a new account
               </Link>
             </p>
           </div>
-
           {/* Form section */}
-          <form className={`${shakeForm ? 'shake' : ''}`} onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email address
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="input pl-10"
-                    placeholder="Enter your email"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete="current-password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="input pl-10 pr-10"
-                    placeholder="Enter your password"
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    )}
-                  </button>
-                </div>
+          <form
+            className={`space-y-5 animate-fade-in ${shakeForm ? 'shake' : ''}`}
+            onSubmit={handleSubmit}
+          >
+            <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">
+                Email address
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-primary-400" />
+                </span>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="input pl-10 focus:ring-primary-500 focus:border-primary-500 rounded-lg shadow-inner bg-gray-50 border border-gray-200 hover:border-primary-300 transition"
+                  placeholder="Enter your email"
+                />
               </div>
             </div>
-
-            <div className="mt-5">
+            <div>
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-primary-400" />
+                </span>
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="input pl-10 pr-12 focus:ring-primary-500 focus:border-primary-500 rounded-lg shadow-inner bg-gray-50 border border-gray-200 hover:border-primary-300 transition"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-primary-500 transition"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="pt-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                className="w-full flex justify-center items-center py-3 px-4 border-0 text-base font-bold rounded-lg text-white bg-gradient-to-r from-primary-500 to-violet-500 hover:from-primary-600 hover:to-violet-600 focus:ring-2 focus:ring-offset-2 focus:ring-primary-400 disabled:opacity-60 transition-all duration-200 shadow-md"
               >
                 {loading ? (
-                  <div className="flex items-center">
-                    <div className="spinner mr-2"></div>
+                  <span className="flex items-center">
+                    <span className="spinner mr-2"></span>
                     Signing in...
-                  </div>
+                  </span>
                 ) : (
                   'Sign in'
                 )}
@@ -164,6 +169,42 @@ const Login = () => {
           </form>
         </div>
       </div>
+      {/* Animations */}
+      <style jsx="true" global="true">{`
+        .animate-fade-in-up {
+          animation: fadeInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) both;
+        }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translate3d(0, 40px, 0);
+          }
+          to {
+            opacity: 1;
+            transform: none;
+          }
+        }
+        .shake {
+          animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+          10%, 90% { transform: translateX(-2px); }
+          20%, 80% { transform: translateX(4px); }
+          30%, 50%, 70% { transform: translateX(-8px); }
+          40%, 60% { transform: translateX(8px); }
+        }
+        .spinner {
+          width: 18px;
+          height: 18px;
+          border: 2.5px solid #A5B4FC;
+          border-top: 2.5px solid #6366F1;
+          border-radius: 50%;
+          animation: spin .8s linear infinite;
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg);}
+        }
+      `}</style>
     </div>
   )
 }
