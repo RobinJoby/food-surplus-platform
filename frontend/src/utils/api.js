@@ -1,8 +1,13 @@
 import axios from 'axios'
 
+// Debug API configuration
+const baseURL = import.meta.env.VITE_API_URL || '/api'
+console.log('API Base URL:', baseURL)
+console.log('Environment:', import.meta.env.VITE_API_URL)
+
 // Create axios instance with base configuration
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: baseURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
