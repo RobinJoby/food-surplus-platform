@@ -36,8 +36,14 @@ const Navbar = () => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">FS</span>
+                <div className="mx-auto h-20 w-auto flex items-center justify-center">
+                  <img
+                    src="/logo.png"
+                    alt="Logo"
+                    className="h-20 w-auto"
+                    width={80}
+                    height={80}
+                  />
                 </div>
                 <span className="text-xl font-bold text-gray-900">Food Surplus</span>
               </Link>
@@ -80,23 +86,21 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             <Link
               to="/"
-              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${
-                isActive('/') || isActive(`/${user.role}`)
+              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${isActive('/') || isActive(`/${user.role}`)
                   ? 'text-primary-600 bg-primary-50'
                   : 'text-gray-600 hover:text-gray-900'
-              }`}
+                }`}
             >
               <Home size={16} />
               <span>Dashboard</span>
             </Link>
-            
+
             <Link
               to="/map"
-              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${
-                isActive('/map')
+              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${isActive('/map')
                   ? 'text-primary-600 bg-primary-50'
                   : 'text-gray-600 hover:text-gray-900'
-              }`}
+                }`}
             >
               <MapPin size={16} />
               <span>Map</span>
@@ -104,11 +108,10 @@ const Navbar = () => {
 
             <Link
               to="/notifications"
-              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${
-                isActive('/notifications')
+              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${isActive('/notifications')
                   ? 'text-primary-600 bg-primary-50'
                   : 'text-gray-600 hover:text-gray-900'
-              }`}
+                }`}
             >
               <Bell size={16} />
               <span>Notifications</span>
@@ -170,24 +173,22 @@ const Navbar = () => {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
               <Link
                 to="/"
-                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/') || isActive(`/${user.role}`)
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${isActive('/') || isActive(`/${user.role}`)
                     ? 'text-primary-600 bg-primary-50'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Home size={20} />
                 <span>Dashboard</span>
               </Link>
-              
+
               <Link
                 to="/map"
-                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/map')
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${isActive('/map')
                     ? 'text-primary-600 bg-primary-50'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 <MapPin size={20} />
@@ -196,11 +197,10 @@ const Navbar = () => {
 
               <Link
                 to="/notifications"
-                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/notifications')
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${isActive('/notifications')
                     ? 'text-primary-600 bg-primary-50'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Bell size={20} />
@@ -209,11 +209,10 @@ const Navbar = () => {
 
               <Link
                 to="/profile"
-                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/profile')
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium ${isActive('/profile')
                     ? 'text-primary-600 bg-primary-50'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 <User size={20} />
