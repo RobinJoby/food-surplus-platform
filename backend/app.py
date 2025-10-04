@@ -39,9 +39,14 @@ def create_app(config_name=None):
         # Otherwise, serve index.html for client-side routing
         return send_from_directory(app.static_folder, 'index.html')
     
-    # Create tables
+    # Create tables (with error handling for Railway deployment)
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+            print("Database tables created successfully")
+        except Exception as e:
+            print(f"Database initialization error: {e}")
+            # Don't fail the app startup - let it retry later
     
     # Auth Routes
     @app.route('/auth/register', methods=['POST'])
