@@ -6,6 +6,9 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
+# Ensure frontend uses relative API URLs for Railway
+ENV VITE_API_URL=/api
+ENV NODE_ENV=production
 RUN npm run build
 
 # Stage 2: Python Backend with Built Frontend

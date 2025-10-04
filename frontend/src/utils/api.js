@@ -1,10 +1,9 @@
 import axios from 'axios'
 
 // Force relative API URLs for Railway deployment
+// This ensures API calls go to the same domain as the frontend
 const baseURL = '/api'
-console.log('API Base URL:', baseURL)
-console.log('Environment VITE_API_URL:', import.meta.env.VITE_API_URL)
-console.log('Forcing relative URL for Railway deployment')
+console.log('API Base URL (hardcoded):', baseURL)
 
 // Create axios instance with base configuration
 export const api = axios.create({
