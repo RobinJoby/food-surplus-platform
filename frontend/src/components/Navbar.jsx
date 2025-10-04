@@ -70,9 +70,13 @@ const Navbar = () => {
         <div className="flex justify-between h-20 items-center">
           {/* Logo and Brand */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-400/30 transition-transform duration-300 hover:scale-105">
-              <span className="text-white font-extrabold text-lg select-none">FS</span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-16 w-auto rounded-lg shadow-md border-2 border-primary-300 bg-white"
+              width={80}
+              height={80}
+            />
             <span className="text-2xl font-extrabold text-gray-900 tracking-wide">Food Surplus</span>
           </Link>
 
@@ -87,8 +91,8 @@ const Navbar = () => {
                 key={to}
                 to={to}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition duration-300 ${isActive(to)
-                    ? 'bg-primary-50 text-primary-700 shadow-inner'
-                    : 'text-gray-700 hover:bg-primary-100 hover:text-primary-700'
+                  ? 'bg-primary-50 text-primary-700 shadow-inner'
+                  : 'text-gray-700 hover:bg-primary-100 hover:text-primary-700'
                   }`}
               >
                 <Icon size={18} />
