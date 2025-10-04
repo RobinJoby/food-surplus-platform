@@ -1,4 +1,14 @@
-# Simple Railway Dockerfile for the entire application
+# Multi-stage Railway Dockerfile for Food Surplus Platform
+
+# Stage 1: Build Frontend
+FROM node:18-alpine AS frontend-builder
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
+
+# Stage 2: Python Backend with Built Frontend
 FROM python:3.11-slim
 
 # Set environment variables
@@ -12,8 +22,6 @@ RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     pkg-config \
     curl \
-    nodejs \
-    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
@@ -24,22 +32,11 @@ COPY backend/requirements.txt ./backend/
 RUN pip install --no-cache-dir -r backend/requirements.txt
 RUN pip install --no-cache-dir gunicorn
 
-# Copy frontend package.json and install Node dependencies
-COPY frontend/package*.json ./frontend/
-WORKDIR /app/frontend
-RUN npm ci --only=production
+# Copy built frontend from previous stage
+COPY --from=frontend-builder /app/frontend/dist ./backend/static
 
-# Copy all source code
-WORKDIR /app
-COPY . .
-
-# Build frontend
-WORKDIR /app/frontend
-RUN npm run build
-
-# Move built frontend to backend static folder
-WORKDIR /app
-RUN mkdir -p backend/static && cp -r frontend/dist/* backend/static/
+# Copy backend source code
+COPY backend/ ./backend/
 
 # Switch to backend directory
 WORKDIR /app/backend
