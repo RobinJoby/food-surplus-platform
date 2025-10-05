@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Navbar from './components/Navbar'
+import LandingPage from './pages/LandingPage'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import DonorDashboard from './pages/DonorDashboard'
@@ -15,7 +16,7 @@ import Notifications from './pages/Notifications'
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const { user, loading } = useAuth()
-  
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -23,22 +24,22 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
       </div>
     )
   }
-  
+
   if (!user) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/" replace />
   }
-  
+
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
     return <Navigate to="/unauthorized" replace />
   }
-  
+
   return children
 }
 
 // Public Route Component (redirect if already authenticated)
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth()
-  
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -46,7 +47,7 @@ const PublicRoute = ({ children }) => {
       </div>
     )
   }
-  
+
   if (user) {
     // Redirect based on user role
     switch (user.role) {
@@ -57,19 +58,48 @@ const PublicRoute = ({ children }) => {
       case 'admin':
         return <Navigate to="/admin" replace />
       default:
-        return <Navigate to="/" replace />
+        return <Navigate to="/dashboard" replace />
     }
   }
-  
+
+  return children
+}
+
+// Public Landing Page Route (redirects authenticated users to dashboard)
+const PublicLandingRoute = ({ children }) => {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="spinner"></div>
+      </div>
+    )
+  }
+
+  if (user) {
+    // Redirect based on user role
+    switch (user.role) {
+      case 'donor':
+        return <Navigate to="/donor" replace />
+      case 'beneficiary':
+        return <Navigate to="/beneficiary" replace />
+      case 'admin':
+        return <Navigate to="/admin" replace />
+      default:
+        return <Navigate to="/dashboard" replace />
+    }
+  }
+
   return children
 }
 
 // Dashboard Router Component
 const DashboardRouter = () => {
   const { user } = useAuth()
-  
-  if (!user) return <Navigate to="/login" replace />
-  
+
+  if (!user) return <Navigate to="/" replace />
+
   switch (user.role) {
     case 'donor':
       return <DonorDashboard />
@@ -78,7 +108,7 @@ const DashboardRouter = () => {
     case 'admin':
       return <AdminDashboard />
     default:
-      return <Navigate to="/login" replace />
+      return <Navigate to="/" replace />
   }
 }
 
@@ -89,8 +119,8 @@ const Unauthorized = () => (
       <h1 className="text-4xl font-bold text-gray-900 mb-4">403</h1>
       <p className="text-xl text-gray-600 mb-8">Unauthorized Access</p>
       <p className="text-gray-500 mb-8">You don't have permission to access this page.</p>
-      <button 
-        onClick={() => window.history.back()} 
+      <button
+        onClick={() => window.history.back()}
         className="btn-primary"
       >
         Go Back
@@ -108,6 +138,11 @@ function App() {
           <main>
             <Routes>
               {/* Public Routes */}
+              <Route path="/" element={
+                <PublicLandingRoute>
+                  <LandingPage />
+                </PublicLandingRoute>
+              } />
               <Route path="/login" element={
                 <PublicRoute>
                   <Login />
@@ -118,50 +153,50 @@ function App() {
                   <Register />
                 </PublicRoute>
               } />
-              
+
               {/* Protected Routes */}
-              <Route path="/" element={
+              <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <DashboardRouter />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/donor" element={
                 <ProtectedRoute allowedRoles={['donor']}>
                   <DonorDashboard />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/beneficiary" element={
                 <ProtectedRoute allowedRoles={['beneficiary']}>
                   <BeneficiaryDashboard />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/admin" element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminDashboard />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/profile" element={
                 <ProtectedRoute>
                   <Profile />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/map" element={
                 <ProtectedRoute>
                   <FoodMap />
                 </ProtectedRoute>
               } />
-              
+
               <Route path="/notifications" element={
                 <ProtectedRoute>
                   <Notifications />
                 </ProtectedRoute>
               } />
-              
+
               {/* Error Routes */}
               <Route path="/unauthorized" element={<Unauthorized />} />
               <Route path="*" element={
@@ -169,8 +204,8 @@ function App() {
                   <div className="text-center">
                     <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
                     <p className="text-xl text-gray-600 mb-8">Page Not Found</p>
-                    <button 
-                      onClick={() => window.history.back()} 
+                    <button
+                      onClick={() => window.history.back()}
                       className="btn-primary"
                     >
                       Go Back
@@ -180,7 +215,7 @@ function App() {
               } />
             </Routes>
           </main>
-          <Toaster 
+          <Toaster
             position="top-right"
             toastOptions={{
               duration: 4000,

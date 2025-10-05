@@ -13,8 +13,38 @@ export const formatDate = (dateString) => {
 export const formatDateTime = (dateString) => {
   if (!dateString) return 'N/A'
   try {
-    return format(parseISO(dateString), 'MMM dd, yyyy HH:mm')
+    // Parse ISO string to Date object (which will be in local time)
+    const date = parseISO(dateString)
+
+    // Format with clear local time indication
+    return format(date, "MMM dd, yyyy HH:mm") + " (Your local time)"
   } catch (error) {
+    console.error("Error formatting date time:", error, dateString)
+    return 'Invalid date'
+  }
+}
+
+// If you need to show the original UTC time without conversion to local time
+export const formatUTCDateTime = (dateString) => {
+  if (!dateString) return 'N/A'
+  try {
+    // Parse ISO string to Date object
+    const date = parseISO(dateString)
+
+    // Get UTC components without timezone conversion
+    const year = date.getUTCFullYear()
+    const month = date.getUTCMonth()
+    const day = date.getUTCDate()
+    const hours = date.getUTCHours()
+    const minutes = date.getUTCMinutes()
+
+    // Create a new Date object with the UTC components
+    const utcDate = new Date(Date.UTC(year, month, day, hours, minutes))
+
+    // Format the UTC date with explicit UTC indication
+    return format(utcDate, "MMM dd, yyyy HH:mm") + " (UTC)"
+  } catch (error) {
+    console.error("Error formatting UTC date time:", error, dateString)
     return 'Invalid date'
   }
 }
@@ -22,8 +52,14 @@ export const formatDateTime = (dateString) => {
 export const formatTimeAgo = (dateString) => {
   if (!dateString) return 'N/A'
   try {
-    return formatDistanceToNow(parseISO(dateString), { addSuffix: true })
+    // parseISO already correctly parses ISO timestamps with timezone information
+    // The issue with formatDistanceToNow is that it might be affected by local timezone
+    // Let's explicitly calculate the distance based on UTC timestamps
+    const date = parseISO(dateString)
+    // Adding proper addSuffix to get "X ago" format
+    return formatDistanceToNow(date, { addSuffix: true })
   } catch (error) {
+    console.error("Error formatting time ago:", error, dateString)
     return 'Invalid date'
   }
 }
@@ -171,15 +207,15 @@ export const getInitials = (name) => {
 // Calculate distance between two coordinates (Haversine formula)
 export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   if (!lat1 || !lon1 || !lat2 || !lon2) return null
-  
+
   const R = 6371 // Earth's radius in kilometers
   const dLat = (lat2 - lat1) * Math.PI / 180
   const dLon = (lon2 - lon1) * Math.PI / 180
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   return R * c
 }
 

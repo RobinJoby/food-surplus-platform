@@ -69,13 +69,6 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-100 via-blue-100 to-violet-100 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-700">
       <div className="max-w-md w-full animate-fade-in-up">
         {/* Logo / Brand */}
-        <div className="flex justify-center mb-6">
-          <img
-            src="/logo.png"
-            alt="Brand Logo"
-            className="h-14 w-14 rounded-full shadow-lg border-2 border-primary-300 object-cover bg-white"
-          />
-        </div>
         {/* Card */}
         <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300 transition-all duration-300">
           {/* Header section */}

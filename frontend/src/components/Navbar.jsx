@@ -13,7 +13,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout()
-    navigate('/login')
+    navigate('/')
     setIsProfileMenuOpen(false)
   }
 
@@ -38,11 +38,11 @@ const Navbar = () => {
               <img
                 src="/logo.png"
                 alt="Logo"
-                className="h-16 w-auto rounded-lg shadow-md border-2 border-primary-300 bg-white"
+                className="h-16 w-auto"
                 width={80}
                 height={80}
               />
-              <span className="text-2xl font-extrabold text-gray-900 tracking-wide">Food Surplus</span>
+              <span className="text-2xl font-extrabold text-gray-900 tracking-wide">FoodBridge</span>
             </Link>
             <div className="flex items-center space-x-5">
               <Link
@@ -69,21 +69,21 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
         <div className="flex justify-between h-20 items-center">
           {/* Logo and Brand */}
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to="/dashboard" className="flex items-center space-x-3">
             <img
               src="/logo.png"
               alt="Logo"
-              className="h-16 w-auto rounded-lg shadow-md border-2 border-primary-300 bg-white"
+              className="h-16"
               width={80}
               height={80}
             />
-            <span className="text-2xl font-extrabold text-gray-900 tracking-wide">Food Surplus</span>
+            <span className="text-2xl font-extrabold text-gray-900 tracking-wide">FoodBridge</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             {[
-              { to: '/', icon: Home, label: 'Dashboard' },
+              { to: '/dashboard', icon: Home, label: 'Dashboard' },
               { to: '/map', icon: MapPin, label: 'Map' },
               { to: '/notifications', icon: Bell, label: 'Notifications' },
             ].map(({ to, icon: Icon, label }) => (
@@ -153,7 +153,7 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 bg-white rounded-xl shadow-lg border border-gray-200 py-4 animate-fade-in">
             {[
-              { to: '/', icon: Home, label: 'Dashboard' },
+              { to: '/dashboard', icon: Home, label: 'Dashboard' },
               { to: '/map', icon: MapPin, label: 'Map' },
               { to: '/notifications', icon: Bell, label: 'Notifications' },
               { to: '/profile', icon: User, label: 'Profile' },

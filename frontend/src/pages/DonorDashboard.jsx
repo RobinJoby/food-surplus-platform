@@ -107,7 +107,7 @@ const DonorDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8 animate-fade-in-up">
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300 transition-all duration-300">
+          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300">
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg">
                 <Package className="h-8 w-8 text-white" />
@@ -250,8 +250,9 @@ const DonorDashboard = () => {
                             <span className={`badge ${getStatusBadgeClass(request.status)}`}>
                               {getStatusText(request.status)}
                             </span>
-                            <span className="text-xs text-gray-500">
-                              {formatTimeAgo(request.requested_at)}
+                            <span className="text-xs text-gray-500 flex flex-col">
+                              <span>{formatTimeAgo(request.requested_at)}</span>
+                              <span className="text-xs opacity-75">{formatDateTime(request.requested_at)}</span>
                             </span>
                           </div>
                         </div>
