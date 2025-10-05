@@ -156,7 +156,7 @@ const Notifications = () => {
         <div className="min-h-screen bg-gradient-to-br from-primary-100 via-blue-100 to-violet-100 transition-colors duration-700">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
-                <div className="mb-8 animate-fade-in-up">
+                <div className="mb-8">
                     <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300 transition-all duration-300">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-4">

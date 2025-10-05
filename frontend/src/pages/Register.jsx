@@ -150,13 +150,6 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-100 via-blue-100 to-violet-100 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-700">
       <div className="max-w-md w-full space-y-8 animate-fade-in-up">
         <div className="flex flex-col items-center">
-          <div className="h-14 w-14 bg-primary-600 rounded-xl shadow-lg flex items-center justify-center mb-2">
-            <img
-              src="/logo.png"
-              alt="Brand Logo"
-              className="h-14 w-14 rounded-full shadow-lg border-2 border-primary-300 object-cover bg-white"
-            />
-          </div>
           <h2 className="text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}

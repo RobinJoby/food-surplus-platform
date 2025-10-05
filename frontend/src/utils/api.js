@@ -31,7 +31,12 @@ api.interceptors.response.use(
       // Token expired or invalid
       localStorage.removeItem('token')
       delete api.defaults.headers.common['Authorization']
-      window.location.href = '/login'
+
+      // Only redirect to login if on a protected route
+      const publicRoutes = ['/', '/login', '/register'];
+      if (!publicRoutes.includes(window.location.pathname)) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error)
   }
