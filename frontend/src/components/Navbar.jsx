@@ -42,7 +42,7 @@ const Navbar = () => {
                 width={80}
                 height={80}
               />
-              <span className="text-2xl font-extrabold text-gray-900 tracking-wide">Food Surplus</span>
+              <span className="text-2xl font-extrabold text-gray-900 tracking-wide">FoodBridge</span>
             </Link>
             <div className="flex items-center space-x-5">
               <Link
@@ -77,7 +77,7 @@ const Navbar = () => {
               width={80}
               height={80}
             />
-            <span className="text-2xl font-extrabold text-gray-900 tracking-wide">Food Surplus</span>
+            <span className="text-2xl font-extrabold text-gray-900 tracking-wide">FoodBridge</span>
           </Link>
 
           {/* Desktop Navigation */}

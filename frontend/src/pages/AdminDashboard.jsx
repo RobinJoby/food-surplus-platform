@@ -93,7 +93,7 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300 transition-all duration-300">
+          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300">
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-violet-500 rounded-xl flex items-center justify-center shadow-lg">
                 <Shield className="h-8 w-8 text-white" />
