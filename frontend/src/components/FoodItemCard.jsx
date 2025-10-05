@@ -1,6 +1,6 @@
 import React from 'react'
 import { MapPin, Clock, Package, User } from 'lucide-react'
-import { formatDateTime, formatDistance, getStatusBadgeClass, getStatusText } from '../utils/helpers'
+import { formatDateTime, formatUTCDateTime, formatDistance, getStatusBadgeClass, getStatusText } from '../utils/helpers'
 
 const FoodItemCard = ({ item, onStatusUpdate, showActions = false }) => {
   const handleStatusChange = (newStatus) => {
@@ -89,7 +89,7 @@ const FoodItemCard = ({ item, onStatusUpdate, showActions = false }) => {
             </span>
 
             <span className="text-xs text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-lg">
-              Created {formatDateTime(item.created_at)}
+              Created: {formatDateTime(item.created_at)}
             </span>
           </div>
         </div>

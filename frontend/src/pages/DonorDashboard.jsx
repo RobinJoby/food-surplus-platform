@@ -250,8 +250,9 @@ const DonorDashboard = () => {
                             <span className={`badge ${getStatusBadgeClass(request.status)}`}>
                               {getStatusText(request.status)}
                             </span>
-                            <span className="text-xs text-gray-500">
-                              {formatTimeAgo(request.requested_at)}
+                            <span className="text-xs text-gray-500 flex flex-col">
+                              <span>{formatTimeAgo(request.requested_at)}</span>
+                              <span className="text-xs opacity-75">{formatDateTime(request.requested_at)}</span>
                             </span>
                           </div>
                         </div>
