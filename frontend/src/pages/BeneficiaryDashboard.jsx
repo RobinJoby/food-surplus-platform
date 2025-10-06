@@ -5,6 +5,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { formatDateTime, formatDistance, getStatusBadgeClass, getStatusText } from '../utils/helpers'
 import toast from 'react-hot-toast'
 import FoodItemCard from '../components/FoodItemCard'
+import PickupRequestCard from '../components/PickupRequestCard'
+import TabNavigation from '../components/TabNavigation'
 
 const BeneficiaryDashboard = () => {
   const { user } = useAuth()
@@ -13,6 +15,7 @@ const BeneficiaryDashboard = () => {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [maxDistance, setMaxDistance] = useState(10)
+  const [activeTab, setActiveTab] = useState('available-food')
   const [stats, setStats] = useState({
     available: 0,
     requested: 0,
@@ -75,6 +78,17 @@ const BeneficiaryDashboard = () => {
     } catch (error) {
       console.error('Error cancelling request:', error)
       toast.error('Failed to cancel request')
+    }
+  }
+
+  const handleRequestAction = async (requestId, action) => {
+    try {
+      await pickupAPI.update(requestId, { status: action })
+      toast.success(`Request ${action} successfully!`)
+      fetchData()
+    } catch (error) {
+      console.error('Error updating request:', error)
+      toast.error(`Failed to ${action} request`)
     }
   }
 
@@ -165,177 +179,119 @@ const BeneficiaryDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in-up">
-          {/* Available Food */}
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl border border-gray-200 hover:border-primary-300 transition-all duration-300">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900">Available Food Near You</h2>
+        {/* Tab Navigation */}
+        <div className="mb-8 animate-fade-in-up">
+          <TabNavigation
+            tabs={[
+              {
+                id: 'available-food',
+                label: 'Available Food Near You',
+                icon: Package,
+                count: filteredFood.length
+              },
+              {
+                id: 'my-requests',
+                label: 'My Pickup Requests',
+                icon: Clock,
+                count: myRequests.length
+              }
+            ]}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+        </div>
 
-              {/* Search and Filter */}
-              <div className="mt-4 space-y-4">
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-5 w-5 text-primary-400" />
+        {/* Tab Content */}
+        <div className="animate-fade-in-up">
+          {activeTab === 'available-food' && (
+            <div className="space-y-6">
+              {/* Search and Filter Controls */}
+              <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200">
+                <div className="flex flex-col lg:flex-row gap-4">
+                  <div className="flex-1 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Search className="h-5 w-5 text-primary-400" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search for food items..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 hover:border-primary-300 transition text-sm font-medium"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Search food items..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-gray-50 hover:border-primary-300 transition"
-                  />
-                </div>
 
-                <div className="flex items-center space-x-3">
-                  <Filter className="h-5 w-5 text-primary-400" />
-                  <label className="text-sm font-semibold text-gray-700">Max distance:</label>
-                  <select
-                    value={maxDistance}
-                    onChange={(e) => setMaxDistance(Number(e.target.value))}
-                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-gray-50 hover:border-primary-300 transition"
-                  >
-                    <option value={5}>5 km</option>
-                    <option value={10}>10 km</option>
-                    <option value={20}>20 km</option>
-                    <option value={50}>50 km</option>
-                  </select>
+                  <div className="flex items-center space-x-3 lg:flex-shrink-0">
+                    <Filter className="h-5 w-5 text-primary-400" />
+                    <label className="text-sm font-semibold text-gray-700 whitespace-nowrap">Max distance:</label>
+                    <select
+                      value={maxDistance}
+                      onChange={(e) => setMaxDistance(Number(e.target.value))}
+                      className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 hover:border-primary-300 transition text-sm font-medium"
+                    >
+                      <option value={5}>5 km</option>
+                      <option value={10}>10 km</option>
+                      <option value={20}>20 km</option>
+                      <option value={50}>50 km</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="p-6">
+
+              {/* Available Food Grid */}
               {filteredFood.length === 0 ? (
-                <div className="text-center py-12">
-                  <Package className="mx-auto h-16 w-16 text-gray-400" />
-                  <h3 className="mt-4 text-lg font-semibold text-gray-900">No food available</h3>
-                  <p className="mt-2 text-sm text-gray-600">
+                <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-12 text-center border border-gray-200">
+                  <Package className="mx-auto h-20 w-20 text-gray-400 mb-6" />
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">
+                    {searchTerm ? 'No matching food items' : 'No food available nearby'}
+                  </h3>
+                  <p className="text-gray-600">
                     {searchTerm
-                      ? 'No food items match your search criteria.'
-                      : 'No food donations are available in your area right now.'
+                      ? 'Try adjusting your search terms or increasing the distance filter.'
+                      : 'No food donations are available in your area right now. Check back later or increase your search distance.'
                     }
                   </p>
                 </div>
               ) : (
-                <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {filteredFood.map((item) => (
-                    <div key={item.id} className="bg-gradient-to-r from-gray-50 to-primary-50 border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="text-base font-bold text-gray-900">{item.title}</h4>
-                          <p className="text-sm text-gray-700 mt-1">{item.description}</p>
-                          <div className="flex items-center space-x-4 mt-3">
-                            <span className="text-sm text-gray-600 font-semibold">
-                              {item.quantity} {item.unit}
-                            </span>
-                            <span className="text-sm text-gray-600 font-semibold">
-                              By: {item.donor_name}
-                            </span>
-                            {item.distance && (
-                              <span className="text-sm text-gray-600 flex items-center font-semibold">
-                                <MapPin size={12} className="mr-1" />
-                                {formatDistance(item.distance)}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center mt-2">
-                            <span className="text-xs text-gray-500 font-medium">
-                              Pickup: {formatDateTime(item.pickup_start)} - {formatDateTime(item.pickup_end)}
-                            </span>
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={() => handleRequestPickup(item.id)}
-                          className="px-4 py-2 bg-gradient-to-r from-primary-500 to-violet-500 text-white font-semibold rounded-lg hover:from-primary-600 hover:to-violet-600 transition-all duration-200 shadow-md text-sm ml-4"
-                        >
-                          Request
-                        </button>
-                      </div>
-                    </div>
+                    <FoodItemCard
+                      key={item.id}
+                      item={item}
+                      onRequestPickup={handleRequestPickup}
+                      showActions={false}
+                      type="beneficiary"
+                    />
                   ))}
                 </div>
               )}
             </div>
-          </div>
+          )}
 
-          {/* My Requests */}
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl border border-gray-200 hover:border-primary-300 transition-all duration-300">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900">My Pickup Requests</h2>
-            </div>
-            <div className="p-6">
+          {activeTab === 'my-requests' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-900">My Pickup Requests</h2>
+
               {myRequests.length === 0 ? (
-                <div className="text-center py-12">
-                  <Clock className="mx-auto h-16 w-16 text-gray-400" />
-                  <h3 className="mt-4 text-lg font-semibold text-gray-900">No requests yet</h3>
-                  <p className="mt-2 text-sm text-gray-600">Your pickup requests will appear here.</p>
+                <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-12 text-center border border-gray-200">
+                  <Clock className="mx-auto h-20 w-20 text-gray-400 mb-6" />
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">No pickup requests yet</h3>
+                  <p className="text-gray-600">Your pickup requests will appear here when you request food items from donors.</p>
                 </div>
               ) : (
-                <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {myRequests.map((request) => (
-                    <div key={request.id} className="bg-gradient-to-r from-gray-50 to-primary-50 border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="text-base font-bold text-gray-900">
-                            {request.food_item?.title}
-                          </h4>
-                          <p className="text-sm text-gray-700 mt-1 font-semibold">
-                            From: {request.food_item?.donor_name}
-                          </p>
-                          {request.message && (
-                            <p className="text-sm text-gray-600 mt-2 italic">
-                              Your message: "{request.message}"
-                            </p>
-                          )}
-                          <div className="flex items-center space-x-4 mt-3">
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadgeClass(request.status)}`}>
-                              {getStatusText(request.status)}
-                            </span>
-                            <span className="text-xs text-gray-500 font-medium">
-                              Requested: {formatDateTime(request.requested_at)}
-                            </span>
-                          </div>
-
-                          {request.status === 'accepted' && request.food_item && (
-                            <div className="mt-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-                              <p className="text-sm text-emerald-800 font-semibold">
-                                ✓ Request accepted! Pickup between {formatDateTime(request.food_item.pickup_start)} - {formatDateTime(request.food_item.pickup_end)}
-                              </p>
-                            </div>
-                          )}
-
-                          {request.status === 'rejected' && (
-                            <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
-                              <p className="text-sm text-red-800 font-semibold">
-                                Request was rejected by the donor.
-                              </p>
-                            </div>
-                          )}
-                        </div>
-
-                        {request.status === 'pending' && (
-                          <button
-                            onClick={() => handleCancelRequest(request.id)}
-                            className="px-4 py-2 bg-gradient-to-r from-red-500 to-rose-500 text-white font-semibold rounded-lg hover:from-red-600 hover:to-rose-600 transition-all duration-200 shadow-md text-sm ml-4"
-                          >
-                            Cancel
-                          </button>
-                        )}
-
-                        {request.status === 'accepted' && (
-                          <button
-                            onClick={() => pickupAPI.update(request.id, { status: 'picked' })}
-                            className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-green-600 transition-all duration-200 shadow-md text-sm ml-4"
-                          >
-                            Mark Picked
-                          </button>
-                        )}
-                      </div>
-                    </div>
+                    <PickupRequestCard
+                      key={request.id}
+                      request={request}
+                      onAction={handleRequestAction}
+                      type="beneficiary"
+                    />
                   ))}
                 </div>
               )}
             </div>
-          </div>
+          )}
         </div>
       </div>
 

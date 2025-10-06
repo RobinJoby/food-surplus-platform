@@ -5,12 +5,15 @@ import { formatDateTime, formatTimeAgo, getStatusBadgeClass, getStatusText } fro
 import toast from 'react-hot-toast'
 import CreateFoodModal from '../components/CreateFoodModal'
 import FoodItemCard from '../components/FoodItemCard'
+import PickupRequestCard from '../components/PickupRequestCard'
+import TabNavigation from '../components/TabNavigation'
 
 const DonorDashboard = () => {
   const [foodItems, setFoodItems] = useState([])
   const [pickupRequests, setPickupRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [activeTab, setActiveTab] = useState('food-items')
   const [stats, setStats] = useState({
     total: 0,
     available: 0,
@@ -171,135 +174,98 @@ const DonorDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in-up">
-          {/* Food Items */}
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl border border-gray-200 hover:border-primary-300 transition-all duration-300">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">My Food Items</h2>
+        {/* Tab Navigation */}
+        <div className="mb-8 animate-fade-in-up">
+          <TabNavigation
+            tabs={[
+              {
+                id: 'food-items',
+                label: 'My Food Items',
+                icon: Package,
+                count: foodItems.length
+              },
+              {
+                id: 'pickup-requests',
+                label: 'Pickup Requests',
+                icon: Clock,
+                count: pickupRequests.length
+              }
+            ]}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+        </div>
+
+        {/* Tab Content */}
+        <div className="animate-fade-in-up">
+          {activeTab === 'food-items' && (
+            <div className="space-y-6">
+              {/* Add Food Button */}
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-900">My Food Items</h2>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-violet-500 text-white font-semibold rounded-lg hover:from-primary-600 hover:to-violet-600 transition-all duration-200 shadow-md"
+                  className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-violet-500 text-white font-semibold rounded-xl hover:from-primary-600 hover:to-violet-600 transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
-                  <Plus size={16} />
-                  <span>Add Food</span>
+                  <Plus size={20} />
+                  <span>Add Food Item</span>
                 </button>
               </div>
-            </div>
-            <div className="p-6">
+
+              {/* Food Items Grid */}
               {foodItems.length === 0 ? (
-                <div className="text-center py-12">
-                  <Package className="mx-auto h-16 w-16 text-gray-400" />
-                  <h3 className="mt-4 text-lg font-semibold text-gray-900">No food items</h3>
-                  <p className="mt-2 text-sm text-gray-600">Get started by creating your first food donation.</p>
-                  <div className="mt-6">
-                    <button
-                      onClick={() => setShowCreateModal(true)}
-                      className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-violet-500 text-white font-semibold rounded-lg hover:from-primary-600 hover:to-violet-600 transition-all duration-200 shadow-md"
-                    >
-                      <Plus className="h-4 w-4" />
-                      <span>Add Food Item</span>
-                    </button>
-                  </div>
+                <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-12 text-center border border-gray-200">
+                  <Package className="mx-auto h-20 w-20 text-gray-400 mb-6" />
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">No food items yet</h3>
+                  <p className="text-gray-600 mb-6">Get started by creating your first food donation and help reduce food waste in your community.</p>
+                  <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-violet-500 text-white font-semibold rounded-xl hover:from-primary-600 hover:to-violet-600 transition-all duration-200 shadow-lg mx-auto"
+                  >
+                    <Plus size={20} />
+                    <span>Add Your First Food Item</span>
+                  </button>
                 </div>
               ) : (
-                <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {foodItems.map((item) => (
                     <FoodItemCard
                       key={item.id}
                       item={item}
                       onStatusUpdate={handleStatusUpdate}
                       showActions={true}
+                      type="donor"
                     />
                   ))}
                 </div>
               )}
             </div>
-          </div>
+          )}
 
-          {/* Pickup Requests */}
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Pickup Requests</h2>
-            </div>
-            <div className="card-content">
+          {activeTab === 'pickup-requests' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-900">Pickup Requests</h2>
+
               {pickupRequests.length === 0 ? (
-                <div className="text-center py-8">
-                  <Clock className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No pickup requests</h3>
-                  <p className="mt-1 text-sm text-gray-500">Requests will appear here when beneficiaries request your food items.</p>
+                <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-12 text-center border border-gray-200">
+                  <Clock className="mx-auto h-20 w-20 text-gray-400 mb-6" />
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">No pickup requests</h3>
+                  <p className="text-gray-600">Requests from beneficiaries will appear here when they're interested in your food donations.</p>
                 </div>
               ) : (
-                <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {pickupRequests.map((request) => (
-                    <div key={request.id} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="text-sm font-medium text-gray-900">
-                            {request.food_item?.title}
-                          </h4>
-                          <p className="text-sm text-gray-600 mt-1">
-                            Requested by: {request.beneficiary_name}
-                          </p>
-                          {request.message && (
-                            <p className="text-sm text-gray-500 mt-2 italic">
-                              "{request.message}"
-                            </p>
-                          )}
-                          <div className="flex items-center space-x-4 mt-2">
-                            <span className={`badge ${getStatusBadgeClass(request.status)}`}>
-                              {getStatusText(request.status)}
-                            </span>
-                            <span className="text-xs text-gray-500 flex flex-col">
-                              <span>{formatTimeAgo(request.requested_at)}</span>
-                              <span className="text-xs opacity-75">{formatDateTime(request.requested_at)}</span>
-                            </span>
-                          </div>
-                        </div>
-
-                        {request.status === 'pending' && (
-                          <div className="flex space-x-2 ml-4">
-                            <button
-                              onClick={() => handleRequestAction(request.id, 'accepted')}
-                              className="btn-success btn-sm"
-                            >
-                              <CheckCircle size={14} className="mr-1" />
-                              Accept
-                            </button>
-                            <button
-                              onClick={() => handleRequestAction(request.id, 'rejected')}
-                              className="btn-danger btn-sm"
-                            >
-                              <XCircle size={14} className="mr-1" />
-                              Reject
-                            </button>
-                          </div>
-                        )}
-
-                        {request.status === 'accepted' && (
-                          <button
-                            onClick={() => handleRequestAction(request.id, 'picked')}
-                            className="btn-primary btn-sm ml-4"
-                          >
-                            Mark as Picked
-                          </button>
-                        )}
-
-                        {request.status === 'picked' && (
-                          <button
-                            onClick={() => handleRequestAction(request.id, 'completed')}
-                            className="btn-success btn-sm ml-4"
-                          >
-                            Complete
-                          </button>
-                        )}
-                      </div>
-                    </div>
+                    <PickupRequestCard
+                      key={request.id}
+                      request={request}
+                      onAction={handleRequestAction}
+                      type="donor"
+                    />
                   ))}
                 </div>
               )}
             </div>
-          </div>
+          )}
         </div>
       </div>
 
