@@ -81,9 +81,9 @@ const FoodItemCard = ({ item, onStatusUpdate, onRequestPickup, showActions = fal
   }
 
   return (
-    <div className="bg-white shadow-lg rounded-2xl border border-gray-200 hover:border-primary-300 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] overflow-hidden">
+    <div className="bg-white shadow-lg rounded-2xl border border-gray-200 hover:border-primary-300 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] overflow-hidden flex flex-col h-full">
       {/* Food Image */}
-      <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+      <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden flex-shrink-0">
         {item.image_url ? (
           <img
             src={item.image_url}
@@ -118,80 +118,87 @@ const FoodItemCard = ({ item, onStatusUpdate, onRequestPickup, showActions = fal
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
       </div>
 
-      <div className="p-6">
-        {/* Title and Description */}
-        <div className="mb-4">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{item.title}</h3>
-          {item.description && (
-            <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
-          )}
-        </div>
-
-        {/* Tags Section */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          <div className="flex items-center bg-primary-50 rounded-full px-3 py-1 border border-primary-200">
-            <Package size={14} className="mr-1 text-primary-600" />
-            <span className="text-xs font-semibold text-primary-700">{item.quantity} {item.unit}</span>
+      {/* Card Content - Flexible */}
+      <div className="p-6 flex flex-col flex-grow">
+        {/* Main Content - Grows to fill space */}
+        <div className="flex-grow">
+          {/* Title and Description */}
+          <div className="mb-4">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{item.title}</h3>
+            {item.description && (
+              <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
+            )}
           </div>
 
-          {item.donor_name && (
-            <div className="flex items-center bg-violet-50 rounded-full px-3 py-1 border border-violet-200">
-              <User size={14} className="mr-1 text-violet-600" />
-              <span className="text-xs font-semibold text-violet-700">{item.donor_name}</span>
+          {/* Tags Section */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex items-center bg-primary-50 rounded-full px-3 py-1 border border-primary-200">
+              <Package size={14} className="mr-1 text-primary-600" />
+              <span className="text-xs font-semibold text-primary-700">{item.quantity} {item.unit}</span>
+            </div>
+
+            {item.donor_name && (
+              <div className="flex items-center bg-violet-50 rounded-full px-3 py-1 border border-violet-200">
+                <User size={14} className="mr-1 text-violet-600" />
+                <span className="text-xs font-semibold text-violet-700">{item.donor_name}</span>
+              </div>
+            )}
+
+            {item.distance !== undefined && (
+              <div className="flex items-center bg-emerald-50 rounded-full px-3 py-1 border border-emerald-200">
+                <MapPin size={14} className="mr-1 text-emerald-600" />
+                <span className="text-xs font-semibold text-emerald-700">{formatDistance(item.distance)} away</span>
+              </div>
+            )}
+          </div>
+
+          {/* Location */}
+          {item.location && (
+            <div className="flex items-center text-sm text-gray-600 mb-3">
+              <MapPin size={16} className="mr-2 text-gray-400" />
+              <span className="font-medium">{item.location}</span>
             </div>
           )}
 
-          {item.distance !== undefined && (
-            <div className="flex items-center bg-emerald-50 rounded-full px-3 py-1 border border-emerald-200">
-              <MapPin size={14} className="mr-1 text-emerald-600" />
-              <span className="text-xs font-semibold text-emerald-700">{formatDistance(item.distance)} away</span>
-            </div>
-          )}
-        </div>
-
-        {/* Location */}
-        {item.location && (
-          <div className="flex items-center text-sm text-gray-600 mb-3">
-            <MapPin size={16} className="mr-2 text-gray-400" />
-            <span className="font-medium">{item.location}</span>
-          </div>
-        )}
-
-        {/* Pickup Time */}
-        <div className="bg-amber-50 rounded-lg p-3 mb-3 border border-amber-200">
-          <div className="flex items-center text-sm text-amber-800">
-            <Clock size={16} className="mr-2 text-amber-600" />
-            <div className="flex flex-col">
-              <span className="font-semibold">Pickup Window</span>
-              <span className="text-xs font-medium">
-                {formatDateTime(item.pickup_start)} - {formatDateTime(item.pickup_end)}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Expiry Date */}
-        {item.expiry_date && (
-          <div className="bg-red-50 rounded-lg p-3 mb-4 border border-red-200">
-            <div className="flex items-center text-sm text-red-800">
-              <Clock size={16} className="mr-2 text-red-600" />
+          {/* Pickup Time */}
+          <div className="bg-amber-50 rounded-lg p-3 mb-3 border border-amber-200">
+            <div className="flex items-center text-sm text-amber-800">
+              <Clock size={16} className="mr-2 text-amber-600" />
               <div className="flex flex-col">
-                <span className="font-semibold">Expires</span>
-                <span className="text-xs font-medium">{formatDateTime(item.expiry_date)}</span>
+                <span className="font-semibold">Pickup Window</span>
+                <span className="text-xs font-medium">
+                  {formatDateTime(item.pickup_start)} - {formatDateTime(item.pickup_end)}
+                </span>
               </div>
             </div>
           </div>
-        )}
 
-        {/* Footer */}
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs text-gray-500 font-medium bg-gray-100 px-3 py-1 rounded-full">
-            Created: {formatDateTime(item.created_at)}
-          </span>
+          {/* Expiry Date */}
+          {item.expiry_date && (
+            <div className="bg-red-50 rounded-lg p-3 mb-4 border border-red-200">
+              <div className="flex items-center text-sm text-red-800">
+                <Clock size={16} className="mr-2 text-red-600" />
+                <div className="flex flex-col">
+                  <span className="font-semibold">Expires</span>
+                  <span className="text-xs font-medium">{formatDateTime(item.expiry_date)}</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Action Buttons */}
-        {getActionButtons()}
+        {/* Footer and Action Buttons - Fixed at Bottom */}
+        <div className="flex-shrink-0 mt-auto">
+          {/* Footer */}
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs text-gray-500 font-medium bg-gray-100 px-3 py-1 rounded-full">
+              Created: {formatDateTime(item.created_at)}
+            </span>
+          </div>
+
+          {/* Action Buttons */}
+          {getActionButtons()}
+        </div>
       </div>
     </div>
   )

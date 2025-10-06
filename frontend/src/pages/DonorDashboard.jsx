@@ -7,6 +7,7 @@ import CreateFoodModal from '../components/CreateFoodModal'
 import FoodItemCard from '../components/FoodItemCard'
 import PickupRequestCard from '../components/PickupRequestCard'
 import TabNavigation from '../components/TabNavigation'
+import DashboardHeader from '../components/DashboardHeader'
 
 const DonorDashboard = () => {
   const [foodItems, setFoodItems] = useState([])
@@ -108,71 +109,36 @@ const DonorDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-100 via-blue-100 to-violet-100 transition-colors duration-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8 animate-fade-in-up">
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Package className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Donor Dashboard</h1>
-                <p className="mt-2 text-gray-600">Manage your food donations and pickup requests</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-fade-in-up">
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-primary-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Package className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Total Items</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.total}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-emerald-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Clock className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Available</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.available}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-amber-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Eye className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Requested</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.requested}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-emerald-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
-                <CheckCircle className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Completed</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.completed}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Dashboard Header with Stats */}
+        <DashboardHeader
+          title="Donor Dashboard"
+          subtitle="Manage your food donations and pickup requests"
+          icon={Package}
+          iconGradient="bg-gradient-to-r from-emerald-500 to-green-500"
+          stats={[
+            {
+              label: 'Total Items',
+              value: stats.total,
+              icon: Package,
+              iconBg: 'bg-gradient-to-r from-primary-500 to-blue-500',
+              bgGradient: 'from-primary-50 to-blue-50'
+            },
+            {
+              label: 'Available',
+              value: stats.available,
+              icon: Clock,
+              iconBg: 'bg-gradient-to-r from-emerald-500 to-green-500',
+              bgGradient: 'from-emerald-50 to-green-50'
+            },
+            {
+              label: 'Completed',
+              value: stats.completed,
+              icon: CheckCircle,
+              iconBg: 'bg-gradient-to-r from-emerald-500 to-teal-500',
+              bgGradient: 'from-emerald-50 to-teal-50'
+            }
+          ]}
+        />
 
         {/* Tab Navigation */}
         <div className="mb-8 animate-fade-in-up">
@@ -227,15 +193,16 @@ const DonorDashboard = () => {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-fr">
                   {foodItems.map((item) => (
-                    <FoodItemCard
-                      key={item.id}
-                      item={item}
-                      onStatusUpdate={handleStatusUpdate}
-                      showActions={true}
-                      type="donor"
-                    />
+                    <div key={item.id} className="h-full">
+                      <FoodItemCard
+                        item={item}
+                        onStatusUpdate={handleStatusUpdate}
+                        showActions={true}
+                        type="donor"
+                      />
+                    </div>
                   ))}
                 </div>
               )}

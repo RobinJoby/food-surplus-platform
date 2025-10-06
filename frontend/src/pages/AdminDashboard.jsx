@@ -3,6 +3,7 @@ import { Users, Package, CheckCircle, XCircle, Clock, Shield } from 'lucide-reac
 import { adminAPI, foodAPI, pickupAPI } from '../utils/api'
 import { formatDateTime, getRoleDisplayName, getRoleBadgeClass, getStatusBadgeClass, getStatusText } from '../utils/helpers'
 import toast from 'react-hot-toast'
+import DashboardHeader from '../components/DashboardHeader'
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([])
@@ -91,95 +92,57 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-100 via-blue-100 to-violet-100 transition-colors duration-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-violet-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Shield className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Admin Dashboard</h1>
-                <p className="mt-2 text-gray-600">Manage users, food items, and system operations</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8 animate-fade-in-up">
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-primary-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Users className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Total Users</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.totalUsers}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-blue-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Users className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Donors</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.donors}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-green-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Users className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Beneficiaries</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.beneficiaries}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-purple-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Package className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Food Items</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.totalFood}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-emerald-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg">
-                <CheckCircle className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Completed</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.completedPickups}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-amber-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Clock className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Pending</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.pendingVerifications}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Dashboard Header with Stats */}
+        <DashboardHeader
+          title="Admin Dashboard"
+          subtitle="Manage users, food items, and system operations"
+          icon={Shield}
+          iconGradient="bg-gradient-to-r from-primary-500 to-violet-500"
+          stats={[
+            {
+              label: 'Total Users',
+              value: stats.totalUsers,
+              icon: Users,
+              iconBg: 'bg-gradient-to-r from-primary-500 to-blue-500',
+              bgGradient: 'from-primary-50 to-blue-50'
+            },
+            {
+              label: 'Donors',
+              value: stats.donors,
+              icon: Users,
+              iconBg: 'bg-gradient-to-r from-blue-500 to-cyan-500',
+              bgGradient: 'from-blue-50 to-cyan-50'
+            },
+            {
+              label: 'Beneficiaries',
+              value: stats.beneficiaries,
+              icon: Users,
+              iconBg: 'bg-gradient-to-r from-green-500 to-emerald-500',
+              bgGradient: 'from-green-50 to-emerald-50'
+            },
+            {
+              label: 'Food Items',
+              value: stats.totalFood,
+              icon: Package,
+              iconBg: 'bg-gradient-to-r from-purple-500 to-indigo-500',
+              bgGradient: 'from-purple-50 to-indigo-50'
+            },
+            {
+              label: 'Completed',
+              value: stats.completedPickups,
+              icon: CheckCircle,
+              iconBg: 'bg-gradient-to-r from-emerald-500 to-green-500',
+              bgGradient: 'from-emerald-50 to-green-50'
+            },
+            {
+              label: 'Pending',
+              value: stats.pendingVerifications,
+              icon: Clock,
+              iconBg: 'bg-gradient-to-r from-amber-500 to-orange-500',
+              bgGradient: 'from-amber-50 to-orange-50'
+            }
+          ]}
+        />
 
         {/* Tabs */}
         <div className="mb-8 animate-fade-in-up">

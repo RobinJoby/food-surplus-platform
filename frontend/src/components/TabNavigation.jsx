@@ -28,7 +28,6 @@ const TabNavigation = ({ tabs, activeTab, onTabChange, className = '' }) => {
                                         : 'bg-gray-100 text-gray-600'
                                     }
                 `}>
-                                    {tab.count}
                                 </span>
                             )}
                         </div>

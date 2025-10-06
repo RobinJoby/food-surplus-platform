@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 import FoodItemCard from '../components/FoodItemCard'
 import PickupRequestCard from '../components/PickupRequestCard'
 import TabNavigation from '../components/TabNavigation'
+import DashboardHeader from '../components/DashboardHeader'
 
 const BeneficiaryDashboard = () => {
   const { user } = useAuth()
@@ -113,71 +114,43 @@ const BeneficiaryDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-100 via-blue-100 to-violet-100 transition-colors duration-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-8 border border-gray-200 hover:border-primary-300">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <MapPin className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Beneficiary Dashboard</h1>
-                <p className="mt-2 text-gray-600">Find and request food donations near you</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-fade-in-up">
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-primary-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Package className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Available Nearby</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.available}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-amber-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Clock className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Pending Requests</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.requested}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-green-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                <CheckCircle className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Accepted</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.accepted}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white bg-opacity-90 shadow-2xl rounded-2xl p-6 border border-gray-200 hover:border-emerald-300 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
-                <CheckCircle className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-600">Completed</p>
-                <p className="text-2xl font-extrabold text-gray-900">{stats.completed}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Dashboard Header with Stats */}
+        <DashboardHeader
+          title="Beneficiary Dashboard"
+          subtitle="Find and request food donations near you"
+          icon={MapPin}
+          iconGradient="bg-gradient-to-r from-blue-500 to-cyan-500"
+          stats={[
+            {
+              label: 'Available Nearby',
+              value: stats.available,
+              icon: Package,
+              iconBg: 'bg-gradient-to-r from-primary-500 to-blue-500',
+              bgGradient: 'from-primary-50 to-blue-50'
+            },
+            {
+              label: 'Pending Requests',
+              value: stats.requested,
+              icon: Clock,
+              iconBg: 'bg-gradient-to-r from-amber-500 to-orange-500',
+              bgGradient: 'from-amber-50 to-orange-50'
+            },
+            {
+              label: 'Accepted',
+              value: stats.accepted,
+              icon: CheckCircle,
+              iconBg: 'bg-gradient-to-r from-green-500 to-emerald-500',
+              bgGradient: 'from-green-50 to-emerald-50'
+            },
+            {
+              label: 'Completed',
+              value: stats.completed,
+              icon: CheckCircle,
+              iconBg: 'bg-gradient-to-r from-emerald-500 to-teal-500',
+              bgGradient: 'from-emerald-50 to-teal-50'
+            }
+          ]}
+        />
 
         {/* Tab Navigation */}
         <div className="mb-8 animate-fade-in-up">
@@ -253,15 +226,16 @@ const BeneficiaryDashboard = () => {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-fr">
                   {filteredFood.map((item) => (
-                    <FoodItemCard
-                      key={item.id}
-                      item={item}
-                      onRequestPickup={handleRequestPickup}
-                      showActions={false}
-                      type="beneficiary"
-                    />
+                    <div key={item.id} className="h-full">
+                      <FoodItemCard
+                        item={item}
+                        onRequestPickup={handleRequestPickup}
+                        showActions={false}
+                        type="beneficiary"
+                      />
+                    </div>
                   ))}
                 </div>
               )}

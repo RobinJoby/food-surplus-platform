@@ -54,25 +54,60 @@ const FoodMap = () => {
         // Set user location if available
         if (user?.latitude && user?.longitude) {
             const location = [parseFloat(user.latitude), parseFloat(user.longitude)]
+            console.log('Setting user location from profile:', location)
             setUserLocation(location)
             setMapCenter(location)
+        } else {
+            // Try to get current location
+            console.log('No user location in profile, attempting to get current location')
+            getCurrentLocation()
         }
 
         fetchFoodItems()
     }, [user, maxDistance])
 
+    useEffect(() => {
+        // Center map based on food items if no user location
+        if (foodItems.length > 0 && !userLocation) {
+            console.log('Centering map based on food items')
+            const avgLat = foodItems.reduce((sum, item) => sum + parseFloat(item.latitude), 0) / foodItems.length
+            const avgLng = foodItems.reduce((sum, item) => sum + parseFloat(item.longitude), 0) / foodItems.length
+            const centerPoint = [avgLat, avgLng]
+            console.log('Calculated center point from food items:', centerPoint)
+            setMapCenter(centerPoint)
+        }
+    }, [foodItems, userLocation])
+
+    useEffect(() => {
+        console.log('Map center changed to:', mapCenter)
+    }, [mapCenter])
+
     const fetchFoodItems = async () => {
         try {
             setLoading(true)
+
+            console.log('Fetching food items with params:', {
+                status: 'available',
+                max_distance: maxDistance,
+                user_location: userLocation
+            })
+
             const response = await foodAPI.getAll({
                 status: 'available',
                 max_distance: maxDistance
             })
 
-            // Filter items that have coordinates
+            console.log('API Response:', response.data)
+
+            // Filter items that have valid coordinates (not null, not zero)
             const itemsWithCoords = (response.data.food_items || []).filter(
-                item => item.latitude && item.longitude
+                item => item.latitude && item.longitude &&
+                    parseFloat(item.latitude) !== 0 && parseFloat(item.longitude) !== 0
             )
+
+            console.log('Items with valid coordinates:', itemsWithCoords)
+            console.log('Total items received:', response.data.food_items?.length || 0)
+            console.log('Items with coordinates:', itemsWithCoords.length)
 
             setFoodItems(itemsWithCoords)
         } catch (error) {
@@ -85,19 +120,37 @@ const FoodMap = () => {
 
     const getCurrentLocation = () => {
         if (navigator.geolocation) {
+            console.log('Getting current location from browser...')
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const location = [position.coords.latitude, position.coords.longitude]
+                    console.log('Browser location obtained:', location)
                     setUserLocation(location)
                     setMapCenter(location)
                     toast.success('Location updated!')
                 },
                 (error) => {
                     console.error('Error getting location:', error)
-                    toast.error('Unable to get your location')
+                    console.log('Falling back to default location or food items center')
+
+                    // If we have food items, center on them
+                    if (foodItems.length > 0) {
+                        const avgLat = foodItems.reduce((sum, item) => sum + parseFloat(item.latitude), 0) / foodItems.length
+                        const avgLng = foodItems.reduce((sum, item) => sum + parseFloat(item.longitude), 0) / foodItems.length
+                        setMapCenter([avgLat, avgLng])
+                        toast.info('Using approximate location based on available food items')
+                    } else {
+                        toast.error('Unable to get your location. Using default view.')
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 300000 // 5 minutes
                 }
             )
         } else {
+            console.log('Geolocation not supported by browser')
             toast.error('Geolocation is not supported by this browser')
         }
     }
@@ -208,59 +261,69 @@ const FoodMap = () => {
                                         )}
 
                                         {/* Food item markers */}
-                                        {foodItems.map((item) => (
-                                            <Marker
-                                                key={item.id}
-                                                position={[parseFloat(item.latitude), parseFloat(item.longitude)]}
-                                                icon={foodIcon}
-                                                eventHandlers={{
-                                                    click: () => setSelectedFood(item)
-                                                }}
-                                            >
-                                                <Popup>
-                                                    <div className="min-w-64">
-                                                        <h4 className="font-medium text-gray-900 mb-2">{item.title}</h4>
-                                                        <p className="text-sm text-gray-600 mb-2">{item.description}</p>
+                                        {foodItems.map((item) => {
+                                            const lat = parseFloat(item.latitude)
+                                            const lng = parseFloat(item.longitude)
+                                            console.log(`Rendering marker for ${item.title} at [${lat}, ${lng}]`)
 
-                                                        <div className="space-y-1 text-sm text-gray-500 mb-3">
-                                                            <div className="flex items-center">
-                                                                <Package size={12} className="mr-2" />
-                                                                <span>{item.quantity} {item.unit}</span>
-                                                            </div>
-                                                            <div className="flex items-center">
-                                                                <User size={12} className="mr-2" />
-                                                                <span>{item.donor_name}</span>
-                                                            </div>
-                                                            <div className="flex items-center">
-                                                                <Clock size={12} className="mr-2" />
-                                                                <span>{formatDateTime(item.pickup_start)}</span>
-                                                            </div>
-                                                            {item.distance && (
+                                            return (
+                                                <Marker
+                                                    key={item.id}
+                                                    position={[lat, lng]}
+                                                    icon={foodIcon}
+                                                    eventHandlers={{
+                                                        click: () => setSelectedFood(item)
+                                                    }}
+                                                >
+                                                    <Popup>
+                                                        <div className="min-w-64">
+                                                            <h4 className="font-medium text-gray-900 mb-2">{item.title}</h4>
+                                                            <p className="text-sm text-gray-600 mb-2">{item.description}</p>
+
+                                                            <div className="space-y-1 text-sm text-gray-500 mb-3">
+                                                                <div className="flex items-center">
+                                                                    <Package size={12} className="mr-2" />
+                                                                    <span>{item.quantity} {item.unit}</span>
+                                                                </div>
+                                                                <div className="flex items-center">
+                                                                    <User size={12} className="mr-2" />
+                                                                    <span>{item.donor_name}</span>
+                                                                </div>
+                                                                <div className="flex items-center">
+                                                                    <Clock size={12} className="mr-2" />
+                                                                    <span>{formatDateTime(item.pickup_start)}</span>
+                                                                </div>
                                                                 <div className="flex items-center">
                                                                     <MapPin size={12} className="mr-2" />
-                                                                    <span>{formatDistance(item.distance)} away</span>
+                                                                    <span>Coords: {lat.toFixed(4)}, {lng.toFixed(4)}</span>
                                                                 </div>
-                                                            )}
-                                                        </div>
+                                                                {item.distance && (
+                                                                    <div className="flex items-center">
+                                                                        <MapPin size={12} className="mr-2" />
+                                                                        <span>{formatDistance(item.distance)} away</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
 
-                                                        <div className="flex items-center justify-between">
-                                                            <span className={`badge ${getStatusBadgeClass(item.status)}`}>
-                                                                {getStatusText(item.status)}
-                                                            </span>
+                                                            <div className="flex items-center justify-between">
+                                                                <span className={`badge ${getStatusBadgeClass(item.status)}`}>
+                                                                    {getStatusText(item.status)}
+                                                                </span>
 
-                                                            {user?.role === 'beneficiary' && item.status === 'available' && (
-                                                                <button
-                                                                    onClick={() => handleRequestPickup(item.id)}
-                                                                    className="btn-primary btn-sm"
-                                                                >
-                                                                    Request
-                                                                </button>
-                                                            )}
+                                                                {user?.role === 'beneficiary' && item.status === 'available' && (
+                                                                    <button
+                                                                        onClick={() => handleRequestPickup(item.id)}
+                                                                        className="btn-primary btn-sm"
+                                                                    >
+                                                                        Request
+                                                                    </button>
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </Popup>
-                                            </Marker>
-                                        ))}
+                                                    </Popup>
+                                                </Marker>
+                                            )
+                                        })}
                                     </MapContainer>
                                 )}
                             </div>
@@ -295,8 +358,8 @@ const FoodMap = () => {
                                             <div
                                                 key={item.id}
                                                 className={`bg-gradient-to-r rounded-xl p-4 cursor-pointer transition-all duration-300 hover:shadow-lg ${selectedFood?.id === item.id
-                                                        ? 'from-primary-50 to-violet-50 border-2 border-primary-300 shadow-lg'
-                                                        : 'from-gray-50 to-primary-50 border border-gray-200 hover:border-primary-300'
+                                                    ? 'from-primary-50 to-violet-50 border-2 border-primary-300 shadow-lg'
+                                                    : 'from-gray-50 to-primary-50 border border-gray-200 hover:border-primary-300'
                                                     }`}
                                                 onClick={() => setSelectedFood(item)}
                                             >
