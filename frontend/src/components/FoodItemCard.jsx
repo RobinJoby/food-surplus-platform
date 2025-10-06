@@ -34,13 +34,6 @@ const FoodItemCard = ({ item, onStatusUpdate, onRequestPickup, showActions = fal
         {item.status === 'available' && (
           <>
             <button
-              onClick={() => {/* Edit functionality can be added later */ }}
-              className="flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-md text-sm"
-            >
-              <Edit size={14} />
-              <span>Edit</span>
-            </button>
-            <button
               onClick={() => handleStatusChange('cancelled')}
               className="flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-rose-500 text-white font-semibold rounded-lg hover:from-red-600 hover:to-rose-600 transition-all duration-200 shadow-md text-sm"
             >
@@ -90,28 +83,39 @@ const FoodItemCard = ({ item, onStatusUpdate, onRequestPickup, showActions = fal
   return (
     <div className="bg-white shadow-lg rounded-2xl border border-gray-200 hover:border-primary-300 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] overflow-hidden">
       {/* Food Image */}
-      <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200">
+      <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
         {item.image_url ? (
           <img
             src={item.image_url}
             alt={item.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
             onError={(e) => {
+              console.log('Image failed to load:', item.image_url)
               e.target.style.display = 'none'
               e.target.nextSibling.style.display = 'flex'
             }}
+            onLoad={() => {
+              console.log('Image loaded successfully:', item.image_url)
+            }}
           />
-        ) : null}
+        ) : (
+          <div className="flex absolute inset-0 items-center justify-center bg-gradient-to-br from-primary-100 to-violet-100">
+            <Package size={48} className="text-primary-400" />
+          </div>
+        )}
         <div className={`${item.image_url ? 'hidden' : 'flex'} absolute inset-0 items-center justify-center bg-gradient-to-br from-primary-100 to-violet-100`}>
           <Package size={48} className="text-primary-400" />
         </div>
 
         {/* Status Badge Overlay */}
         <div className="absolute top-3 right-3">
-          <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-lg ${getStatusBadgeClass(item.status)}`}>
+          <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm ${getStatusBadgeClass(item.status)}`}>
             {getStatusText(item.status)}
           </span>
         </div>
+
+        {/* Gradient overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
       </div>
 
       <div className="p-6">
