@@ -34,15 +34,21 @@ const Navbar = () => {
       <nav className="bg-white bg-opacity-90 shadow-2xl border-b border-gray-200 transition-colors duration-700 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
-            <Link to="/" className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-2 group">
               <img
                 src="/logo.png"
                 alt="Logo"
-                className="h-16 w-auto"
+                className="h-16 w-auto transition-transform duration-300 group-hover:scale-105 logo-hover-effect"
                 width={80}
                 height={80}
               />
-              <span className="text-2xl font-extrabold text-gray-900 tracking-wide">FoodBridge</span>
+              <div className="relative">
+                <span className="text-3xl font-black food-bridge-text tracking-tight hover:tracking-wide transition-all duration-300 drop-shadow-sm">
+                  Food<span className="text-orange-500 font-extrabold">Bridge</span>
+                </span>
+                <div className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-emerald-500 to-orange-500 group-hover:w-full transition-all duration-500 rounded-full"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600/20 to-orange-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+              </div>
             </Link>
             <div className="flex items-center space-x-5">
               <Link
@@ -69,15 +75,21 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
         <div className="flex justify-between h-20 items-center">
           {/* Logo and Brand */}
-          <Link to="/dashboard" className="flex items-center space-x-3">
+          <Link to="/dashboard" className="flex items-center space-x-2 group">
             <img
               src="/logo.png"
               alt="Logo"
-              className="h-16"
+              className="h-16 transition-transform duration-300 group-hover:scale-105 logo-hover-effect"
               width={80}
               height={80}
             />
-            <span className="text-2xl font-extrabold text-gray-900 tracking-wide">FoodBridge</span>
+            <div className="relative">
+              <span className="text-3xl font-black food-bridge-text tracking-tight hover:tracking-wide transition-all duration-300 drop-shadow-sm">
+                Food<span className="text-orange-500 font-extrabold">Bridge</span>
+              </span>
+              <div className="absolute -bottom-1 left-0 h-0.5 w-0 bg-gradient-to-r from-emerald-500 to-orange-500 group-hover:w-full transition-all duration-500 rounded-full"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600/20 to-orange-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
@@ -196,9 +208,12 @@ const Navbar = () => {
 
       {/* Overlay and animation styles */}
       <style jsx="true" global="true">{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
+        
         .animate-fade-in-up {
           animation: fadeInUp 0.5s ease forwards;
         }
+        
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -208,6 +223,31 @@ const Navbar = () => {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+
+        /* Custom gradient text animation */
+        .food-bridge-text {
+          font-family: 'Poppins', sans-serif;
+          background: linear-gradient(45deg, #059669, #0891b2, #dc2626, #ea580c);
+          background-size: 300% 300%;
+          animation: gradientShift 4s ease-in-out infinite;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes gradientShift {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+
+        /* Hover effect for logo */
+        .logo-hover-effect:hover {
+          filter: drop-shadow(0 8px 16px rgba(5, 150, 105, 0.3));
         }
       `}</style>
     </nav>

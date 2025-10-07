@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Plus, Package, Clock, CheckCircle, XCircle, Eye, Edit } from 'lucide-react'
+import { Plus, Package, Clock, CheckCircle, XCircle, Eye, Edit, Utensils, Heart } from 'lucide-react'
 import { foodAPI, pickupAPI } from '../utils/api'
 import { formatDateTime, formatTimeAgo, getStatusBadgeClass, getStatusText } from '../utils/helpers'
 import toast from 'react-hot-toast'
@@ -146,14 +146,14 @@ const DonorDashboard = () => {
             tabs={[
               {
                 id: 'food-items',
-                label: 'My Food Items',
-                icon: Package,
+                label: '🍽️ My Food Donations',
+                icon: Utensils,
                 count: foodItems.length
               },
               {
                 id: 'pickup-requests',
-                label: 'Pickup Requests',
-                icon: Clock,
+                label: '📋 Pickup Requests',
+                icon: Heart,
                 count: pickupRequests.length
               }
             ]}

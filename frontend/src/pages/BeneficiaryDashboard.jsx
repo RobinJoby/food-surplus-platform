@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { MapPin, Clock, Package, CheckCircle, Search, Filter } from 'lucide-react'
+import { MapPin, Clock, Package, CheckCircle, Search, Filter, Utensils, Clipboard } from 'lucide-react'
 import { foodAPI, pickupAPI } from '../utils/api'
 import { useAuth } from '../contexts/AuthContext'
 import { formatDateTime, formatDistance, getStatusBadgeClass, getStatusText } from '../utils/helpers'
@@ -158,14 +158,14 @@ const BeneficiaryDashboard = () => {
             tabs={[
               {
                 id: 'available-food',
-                label: 'Available Food Near You',
-                icon: Package,
+                label: '🌟 Discover Food Near You',
+                icon: Utensils,
                 count: filteredFood.length
               },
               {
                 id: 'my-requests',
-                label: 'My Pickup Requests',
-                icon: Clock,
+                label: '📋 My Active Requests',
+                icon: Clipboard,
                 count: myRequests.length
               }
             ]}
